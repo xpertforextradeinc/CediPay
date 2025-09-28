@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/cedipay_dev?schema=public
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+      - PORT=4000
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Waiting for database to be ready...'
+        while ! nc -z postgres 5432; do
+          echo 'Waiting for PostgreSQL...'
+          sleep 2
+        done
+        echo 'PostgreSQL is ready!'
+        npm run prisma:migrate
+        npm start
+      "
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cedipay_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
