@@ -32,11 +32,15 @@ describe('CediPay API Basic Functionality', () => {
     test('should have JWT token generation working', () => {
       const jwt = require('jsonwebtoken');
       const testUserId = 'test-user-123';
-      const token = jwt.sign({ userId: testUserId }, process.env['JWT_SECRET'], { expiresIn: '7d' });
-      
+      const token = jwt.sign(
+        { userId: testUserId },
+        process.env['JWT_SECRET'],
+        { expiresIn: '7d' }
+      );
+
       expect(token).toBeDefined();
       expect(typeof token).toBe('string');
-      
+
       const decoded = jwt.verify(token, process.env['JWT_SECRET']);
       expect(decoded.userId).toBe(testUserId);
     });

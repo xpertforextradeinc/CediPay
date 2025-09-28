@@ -22,7 +22,7 @@ const generateToken = (userId: string): string => {
   if (!process.env['JWT_SECRET']) {
     throw new Error('JWT_SECRET is not defined in environment variables');
   }
-  
+
   return jwt.sign({ userId }, process.env['JWT_SECRET'], { expiresIn: '7d' });
 };
 
@@ -76,14 +76,14 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error('Registration error:', error);
-    
+
     if (error instanceof z.ZodError) {
-      res.status(400).json({ 
-        error: 'Validation failed', 
-        details: error.errors.map(err => ({
+      res.status(400).json({
+        error: 'Validation failed',
+        details: error.errors.map((err) => ({
           field: err.path.join('.'),
           message: err.message,
-        }))
+        })),
       });
     } else {
       res.status(500).json({ error: 'Registration failed' });
@@ -129,14 +129,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    
+
     if (error instanceof z.ZodError) {
-      res.status(400).json({ 
-        error: 'Validation failed', 
-        details: error.errors.map(err => ({
+      res.status(400).json({
+        error: 'Validation failed',
+        details: error.errors.map((err) => ({
           field: err.path.join('.'),
           message: err.message,
-        }))
+        })),
       });
     } else {
       res.status(500).json({ error: 'Login failed' });
