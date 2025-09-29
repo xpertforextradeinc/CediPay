@@ -179,9 +179,26 @@ The API uses JWT (JSON Web Tokens) for authentication:
 4. Push to the branch (`git push origin feat/amazing-feature`)
 5. Open a Pull Request
 
+## 🔌 Bubble Plugin Integration
+
+CediPay modules can be integrated with Bubble.io for no-code/low-code development. We provide comprehensive guides for:
+
+- **GitHub Sync**: Link your Bubble plugins to GitHub for version control and collaboration
+- **Plugin Development**: Best practices for developing CediPay-branded Bubble plugins
+- **CI/CD Integration**: Automated testing and deployment workflows
+
+📖 **[View the complete Bubble GitHub Integration Guide](./BUBBLE-GITHUB-SYNC.md)** for step-by-step instructions on:
+- Registering as a Bubble plugin developer
+- Connecting GitHub to your Bubble account
+- Syncing plugins between Bubble and GitHub
+- Managing versioning and collaboration
+- Troubleshooting common issues
+
+This enables easier plugin code management, versioning, collaboration, and CI/CD for CediPay modules in the Bubble ecosystem.
+
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ## 📞 Support
 
