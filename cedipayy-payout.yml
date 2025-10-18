@@ -1,0 +1,17 @@
+name: Cedipayy Payout Trigger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  payout:
+    runs-on: ubuntu-latest
+    env:
+      BUBBLE_API_TOKEN: ${{ secrets.BUBBLE_API_TOKEN }}
+    steps:
+      - name: Trigger Cedipayy Payout
+        run: |
+          curl -X POST https://cedipayy.bubbleapps.io/api/1.1/wf/payout \
+            -H "Authorization: Bearer $BUBBLE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"amount":100,"crypto_type":"USDT","recipient_id":"user_123"}'
