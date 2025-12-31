@@ -13,6 +13,17 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Vercel Web Analytics Support Headers
+// These headers support Vercel Analytics integration in frontend applications
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((_req, res, next) => {
+  // Add headers to support Vercel Web Analytics
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
 // Health check endpoint
 app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'OK', message: 'CediPay API is running' });
