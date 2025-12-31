@@ -1,12 +1,17 @@
 export default async function handler(req, res) {
+  const secret = process.env.XGS_DODO_SECRET_KEY;
+
+  // Handle GET requests (browser test)
+  if (req.method === "GET") {
+    return res.status(200).json({ status: "checkout route active" });
+  }
+
+  // Handle POST requests (real payment)
+  if (!secret) {
+    return res.status(500).json({ error: "Missing API key" });
+  }
+
   try {
-    const secret = process.env.XGS_DODO_SECRET_KEY;
-
-    if (!secret) {
-      return res.status(500).json({ error: "Missing API key" });
-    }
-
-    // Example: Forward the request to Dodo API
     const response = await fetch("https://api.dodo.dev/payments", {
       method: "POST",
       headers: {
@@ -20,6 +25,9 @@ export default async function handler(req, res) {
     return res.status(200).json(data);
 
   } catch (error) {
-    return res.status(500).json({ error: "Server error", details: error.message });
+    return res.status(500).json({
+      error: "Server error",
+      details: error.message
+    });
   }
 }
