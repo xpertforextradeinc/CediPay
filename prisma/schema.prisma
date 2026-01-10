@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,16 +12,51 @@ enum Role {
   ADMIN
 }
 
+// 1. UPDATED USER MODEL
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
+  id          String        @id @default(cuid())
+  email       String        @unique
   password    String
   firstName   String
   lastName    String
-  isVerified  Boolean  @default(false)
-  role        Role     @default(USER)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isVerified  Boolean       @default(false)
+  role        Role          @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  // This links the user to their transaction history
+  transactions Transaction[]
 
   @@map("users")
+}
+
+// 2. NEW TRANSACTION MODEL
+model Transaction {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id]) // The link back to User
+  amount            Float
+  type              TransactionType
+  status            TransactionStatus @default(PENDING)
+  network           String?           // MTN, VODAFONE, etc.
+  mobileNumber      String?
+  externalReference String?           // Paystack/Flutterwave ref
+  details           String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@map("transactions")
+}
+
+// 3. NEW ENUMS
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+enum TransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }
