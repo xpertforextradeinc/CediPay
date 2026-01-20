@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import './types/express';
 import authRoutes from './routes/auth';
 
 const app = express();

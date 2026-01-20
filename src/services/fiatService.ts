@@ -27,7 +27,7 @@ export const sendMobileMoney = async (data: PayoutRequest) => {
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${process.env['PAYSTACK_SECRET_KEY']}`,
           'Content-Type': 'application/json'
         }
       }
