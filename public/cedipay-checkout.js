@@ -371,7 +371,18 @@
     const link = document.createElement('link');
     link.id = 'cedipay-styles';
     link.rel = 'stylesheet';
-    link.href = config.apiUrl.replace('/api', '') + '/cedipay-checkout.css';
+    
+    // Construct CSS URL more robustly
+    let baseUrl;
+    try {
+      const apiUrl = new URL(config.apiUrl);
+      baseUrl = apiUrl.origin;
+    } catch (e) {
+      // Fallback: remove '/api' if present, or use as-is
+      baseUrl = config.apiUrl.replace(/\/api$/, '');
+    }
+    
+    link.href = baseUrl + '/cedipay-checkout.css';
     document.head.appendChild(link);
   }
 

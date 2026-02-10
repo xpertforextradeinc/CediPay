@@ -254,7 +254,7 @@ export const handlePaymentWebhook = async (req: Request, res: Response): Promise
 
     // Trigger webhook deliveries to merchant's registered endpoints
     // (This would use the existing webhook service)
-    
+
     res.status(200).json({
       success: true,
       message: 'Webhook processed successfully',

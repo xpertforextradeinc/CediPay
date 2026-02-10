@@ -12,7 +12,18 @@ const app = express();
 
 // Middleware
 app.use(helmet({
-  contentSecurityPolicy: false, // Allow inline scripts for demo page
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts for widget
+      styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for widget
+      imgSrc: ["'self'", 'data:', 'https:'],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", 'data:'],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
 }));
 app.use(cors());
 app.use(morgan('combined'));
