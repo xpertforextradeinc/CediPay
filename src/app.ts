@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import './types/express';
 import authRoutes from './routes/auth';
+import webhookRoutes from './routes/webhook';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/health', (_req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/webhooks', webhookRoutes);
 
 // 404 handler
 app.use('*', (_req, res) => {
