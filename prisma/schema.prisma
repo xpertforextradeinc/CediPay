@@ -21,7 +21,9 @@ model User {
   updatedAt   DateTime      @updatedAt
   
   // This links the user to their transaction history
-  transactions Transaction[]
+  transactions     Transaction[]
+  // Webhook endpoints for this user/merchant
+  webhookEndpoints WebhookEndpoint[]
 
   @@map("users")
 }
@@ -40,6 +42,9 @@ model Transaction {
   details           String?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  
+  // Webhook deliveries for this transaction
+  webhookDeliveries WebhookDelivery[]
 
   @@map("transactions")
 }
@@ -60,4 +65,54 @@ enum TransactionStatus {
   PROCESSING
   COMPLETED
   FAILED
+}
+
+// 4. WEBHOOK ENDPOINT MODEL
+model WebhookEndpoint {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  url       String
+  secret    String   // HMAC secret for payload signing
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Webhook deliveries for this endpoint
+  webhookDeliveries WebhookDelivery[]
+
+  @@map("webhook_endpoints")
+}
+
+// 5. WEBHOOK DELIVERY MODEL
+model WebhookDelivery {
+  id                String              @id @default(cuid())
+  webhookEndpointId String
+  webhookEndpoint   WebhookEndpoint     @relation(fields: [webhookEndpointId], references: [id], onDelete: Cascade)
+  transactionId     String
+  transaction       Transaction         @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  event             String              // payment.pending, payment.success, payment.failed
+  payload           String              @db.Text // JSON payload sent
+  status            WebhookDeliveryStatus @default(PENDING)
+  attempts          Int                 @default(0)
+  lastAttemptAt     DateTime?
+  nextRetryAt       DateTime?
+  responseStatus    Int?                // HTTP status code
+  responseBody      String?             @db.Text
+  errorMessage      String?             @db.Text
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([webhookEndpointId])
+  @@index([transactionId])
+  @@index([status])
+  @@map("webhook_deliveries")
+}
+
+// 6. WEBHOOK DELIVERY STATUS ENUM
+enum WebhookDeliveryStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  RETRYING
 }
