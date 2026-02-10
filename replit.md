@@ -64,8 +64,38 @@ The server runs on port 5000 with hot reload via nodemon.
 - **User**: Core user model with email/password authentication
 - **Transaction**: Financial transaction records with status tracking
 
+## Security Scanning
+
+Semgrep is configured for security scanning with Node.js/TypeScript/Express-focused rulesets.
+
+### Scan Commands
+- `npm run security:scan` - Standard scan with default + TypeScript rulesets and custom CediPay rules
+- `npm run security:scan:quick` - Fast scan with custom CediPay rules only
+- `npm run security:scan:full` - Comprehensive scan with all rulesets (default, TypeScript, Express, JWT)
+
+### Custom Rules (.semgrep.yml)
+CediPay-specific security rules covering:
+- Hardcoded JWT secrets and credentials
+- SQL injection via string interpolation and Prisma raw queries
+- Weak bcrypt salt rounds (must be >= 12)
+- eval() usage prevention
+- Password/sensitive data in logs or API responses
+- Disabled TLS verification
+- JWT 'none' algorithm attacks
+- Overly permissive CORS configuration
+
+### Registry Rulesets Used
+- `p/default` - OWASP Top 10 coverage for Express, NestJS, Hapi, Koa
+- `p/typescript` - TypeScript-specific security rules
+- `p/express` - Express framework rules (full scan only)
+- `p/jwt` - JWT security rules (full scan only)
+
 ## Recent Changes
 
+- 2026-02-10: Added Semgrep security scanning
+  - Installed Python 3.11 and Semgrep
+  - Created .semgrep.yml with 12 custom CediPay security rules
+  - Added npm scripts for quick, standard, and full security scans
 - 2026-01-20: Initial Replit setup and configuration
   - Configured server to bind to 0.0.0.0:5000
   - Set up PostgreSQL database with Prisma

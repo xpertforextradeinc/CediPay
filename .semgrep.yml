@@ -1,0 +1,190 @@
+rules:
+  - id: cedipay-hardcoded-jwt-secret
+    patterns:
+      - pattern-either:
+          - pattern: jwt.sign($PAYLOAD, "...", ...)
+          - pattern: jwt.sign($PAYLOAD, '...', ...)
+          - pattern: jwt.verify($TOKEN, "...", ...)
+          - pattern: jwt.verify($TOKEN, '...', ...)
+    message: >
+      Hardcoded JWT secret detected. Use environment variables for secrets.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+
+  - id: cedipay-hardcoded-secret-in-variable
+    patterns:
+      - pattern-either:
+          - pattern: const $SECRET = "..."
+          - pattern: const $SECRET = '...'
+          - pattern: let $SECRET = "..."
+          - pattern: let $SECRET = '...'
+          - pattern: var $SECRET = "..."
+          - pattern: var $SECRET = '...'
+      - metavariable-regex:
+          metavariable: $SECRET
+          regex: (?i).*(secret|password|api_key|apikey|private_key|access_key).*
+    message: >
+      Potential hardcoded secret in variable '$SECRET'. Use environment variables instead.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+
+  - id: cedipay-prisma-raw-query-injection
+    patterns:
+      - pattern-either:
+          - pattern: prisma.$queryRaw(`... ${$INPUT} ...`)
+          - pattern: prisma.$queryRawUnsafe(...)
+          - pattern: prisma.$executeRaw(`... ${$INPUT} ...`)
+          - pattern: prisma.$executeRawUnsafe(...)
+    message: >
+      SQL injection risk in Prisma raw query. Use Prisma.sql tagged template or parameterized queries instead of $queryRawUnsafe/$executeRawUnsafe.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-89: SQL Injection"
+
+  - id: cedipay-sql-string-interpolation
+    patterns:
+      - pattern-either:
+          - pattern: $DB.query(`... ${$INPUT} ...`)
+          - pattern: $DB.execute(`... ${$INPUT} ...`)
+          - pattern: $DB.raw(`... ${$INPUT} ...`)
+    message: >
+      Potential SQL injection via string interpolation. Use parameterized queries.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-89: SQL Injection"
+
+  - id: cedipay-weak-bcrypt-low-rounds
+    patterns:
+      - pattern-either:
+          - pattern: bcrypt.hash($PASSWORD, 1)
+          - pattern: bcrypt.hash($PASSWORD, 2)
+          - pattern: bcrypt.hash($PASSWORD, 3)
+          - pattern: bcrypt.hash($PASSWORD, 4)
+          - pattern: bcrypt.hash($PASSWORD, 5)
+          - pattern: bcrypt.hash($PASSWORD, 6)
+          - pattern: bcrypt.hash($PASSWORD, 7)
+          - pattern: bcrypt.hash($PASSWORD, 8)
+          - pattern: bcrypt.hash($PASSWORD, 9)
+          - pattern: bcrypt.hash($PASSWORD, 10)
+          - pattern: bcrypt.hash($PASSWORD, 11)
+    message: >
+      Bcrypt salt rounds are too low. Use at least 12 rounds for adequate security.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-916: Use of Password Hash With Insufficient Computational Effort"
+
+  - id: cedipay-eval-usage
+    patterns:
+      - pattern-either:
+          - pattern: eval(...)
+          - pattern: new Function(...)
+    message: >
+      Use of eval() or new Function() is dangerous and can lead to code injection attacks. Remove or replace with safer alternatives.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-95: Eval Injection"
+
+  - id: cedipay-sensitive-data-in-logs
+    patterns:
+      - pattern-either:
+          - pattern: console.$METHOD(<... password ...>)
+          - pattern: console.$METHOD(<... secret ...>)
+          - pattern: console.$METHOD(<... apiKey ...>)
+          - pattern: console.$METHOD(<... token ...>)
+          - pattern: console.$METHOD(<... creditCard ...>)
+    message: >
+      Potential sensitive data being logged. Remove sensitive data from log statements.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-532: Insertion of Sensitive Information into Log File"
+
+  - id: cedipay-disabled-tls-verification
+    pattern: |
+      rejectUnauthorized: false
+    message: >
+      TLS certificate verification is disabled. This allows man-in-the-middle attacks.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+
+  - id: cedipay-jwt-none-algorithm
+    patterns:
+      - pattern-either:
+          - pattern: |
+              jwt.verify($TOKEN, $SECRET, {algorithms: ["none"]})
+          - pattern: |
+              jwt.verify($TOKEN, $SECRET, {..., algorithms: ["none"], ...})
+    message: >
+      JWT 'none' algorithm is insecure and allows token forgery. Use RS256 or HS256.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
+
+  - id: cedipay-cors-wildcard
+    patterns:
+      - pattern-either:
+          - pattern: |
+              cors({origin: "*"})
+          - pattern: |
+              cors({origin: '*'})
+          - pattern: |
+              cors({..., origin: "*", ...})
+          - pattern: |
+              cors({..., origin: '*', ...})
+    message: >
+      CORS is configured to allow all origins. Restrict to trusted domains in production.
+    languages: [typescript, javascript]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-942: Permissive Cross-domain Policy"
+
+  - id: cedipay-sensitive-data-in-response
+    patterns:
+      - pattern-either:
+          - pattern: res.json(<... password ...>)
+          - pattern: res.send(<... password ...>)
+          - pattern: res.json(<... secret ...>)
+          - pattern: res.send(<... secret ...>)
+    message: >
+      Sensitive data may be included in API response. Ensure passwords and secrets are excluded.
+    languages: [typescript, javascript]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-200: Exposure of Sensitive Information"
+
+  - id: cedipay-child-process-injection
+    patterns:
+      - pattern-either:
+          - pattern: child_process.exec($CMD, ...)
+          - pattern: child_process.execSync($CMD, ...)
+          - pattern: exec($CMD, ...)
+          - pattern: execSync($CMD, ...)
+    message: >
+      Use of child_process exec with potential user input. Use execFile or spawn with argument arrays to prevent command injection.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-78: OS Command Injection"

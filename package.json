@@ -13,7 +13,10 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "security:scan": "semgrep scan --config .semgrep.yml --config p/default --config p/typescript --exclude='node_modules' --exclude='.pythonlibs' --exclude='dist' --exclude='.git' src/",
+    "security:scan:quick": "semgrep scan --config .semgrep.yml --exclude='node_modules' --exclude='.pythonlibs' --exclude='dist' --exclude='.git' src/",
+    "security:scan:full": "semgrep scan --config .semgrep.yml --config p/default --config p/typescript --config p/express --config p/jwt --exclude='node_modules' --exclude='.pythonlibs' --exclude='dist' --exclude='.git' src/"
   },
   "keywords": [
     "crypto",
