@@ -24,3 +24,5 @@
 +
 +> Production hosting & deployment: Replit.  
 +> Vercel: removed/not used.
+## 🚢 Deployment
+- Production host: Replit — https://cedi-pay-2.replit.app
