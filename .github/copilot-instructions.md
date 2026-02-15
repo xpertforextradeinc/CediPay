@@ -426,7 +426,7 @@ edgeCases.forEach(amount => {
 
 - **2 spaces** for indentation
 - **Single quotes** for strings
-- **80 characters** max line length
+- **80 characters** max line length (TypeScript/JavaScript code only)
 - **Trailing commas** (ES5 style)
 - **Semicolons** required
 
