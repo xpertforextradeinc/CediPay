@@ -21,7 +21,9 @@ export const sendMobileMoney = async (data: PayoutRequest) => {
       'https://api.paystack.co/transfer/initiate', 
       {
         source: "balance", 
-        amount: cleanData.amount * 100, // Convert to pesewas
+        // Convert to pesewas using Math.round to avoid floating-point precision errors
+        // e.g., 2.07 * 100 = 206.99999999999997, but Math.round(2.07 * 100) = 207
+        amount: Math.round(cleanData.amount * 100),
         recipient: cleanData.mobileNumber,
         reason: "CediPay Crypto Withdrawal"
       },
