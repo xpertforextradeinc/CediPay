@@ -1,5 +1,5 @@
 {
-  "name": "cedipay-backend",
+  "name": "@xpertforextradeinc/cedipay-backend",
   "version": "1.0.0",
   "description": "TypeScript Node.js backend for CediPay - crypto-to-fiat app for the Ghanaian market",
   "main": "dist/server.js",
@@ -29,6 +29,9 @@
   ],
   "author": "XpertForexTrade Inc",
   "license": "MIT",
+  "publishConfig": {
+    "@xpertforextradeinc:registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "@prisma/client": "^5.6.0",
     "axios": "^1.13.2",
