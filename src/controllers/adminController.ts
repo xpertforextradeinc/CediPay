@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma/client';
+import { Prisma, KYCStatus, Role, TransactionStatus, TransactionType } from '@prisma/client';
 import { z } from 'zod';
 
 // Helper function to create audit log
@@ -44,14 +45,14 @@ export const getMerchants = async (req: Request, res: Response): Promise<void> =
     const skip = (pageNum - 1) * limitNum;
 
     // Build where clause
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
     
     if (kycStatus) {
-      where.kycStatus = kycStatus;
+      where.kycStatus = kycStatus as KYCStatus;
     }
     
     if (role) {
-      where.role = role;
+      where.role = role as Role;
     }
     
     if (search) {
@@ -206,7 +207,7 @@ export const updateKYCStatus = async (req: Request, res: Response): Promise<void
       return;
     }
 
-    const updateData: any = {
+    const updateData: Prisma.UserUpdateInput = {
       kycStatus,
     };
 
@@ -238,7 +239,7 @@ export const updateKYCStatus = async (req: Request, res: Response): Promise<void
         req.user.id,
         'KYC_STATUS_UPDATED',
         'User',
-        id || null,
+        id,
         { kycStatus, kycNotes },
         req
       );
@@ -281,22 +282,22 @@ export const getTransactions = async (req: Request, res: Response): Promise<void
     const skip = (pageNum - 1) * limitNum;
 
     // Build where clause
-    const where: any = {};
+    const where: Prisma.TransactionWhereInput = {};
 
     if (status) {
-      where.status = status;
+      where.status = status as TransactionStatus;
     }
 
     if (type) {
-      where.type = type;
+      where.type = type as TransactionType;
     }
 
     if (userId) {
-      where.userId = userId;
+      where.userId = userId as string;
     }
 
     if (network) {
-      where.network = network;
+      where.network = network as string;
     }
 
     if (startDate || endDate) {
@@ -495,18 +496,18 @@ export const getAuditLogs = async (req: Request, res: Response): Promise<void> =
     const skip = (pageNum - 1) * limitNum;
 
     // Build where clause
-    const where: any = {};
+    const where: Prisma.AuditLogWhereInput = {};
 
     if (userId) {
-      where.userId = userId;
+      where.userId = userId as string;
     }
 
     if (action) {
-      where.action = action;
+      where.action = action as string;
     }
 
     if (resourceType) {
-      where.resourceType = resourceType;
+      where.resourceType = resourceType as string;
     }
 
     if (startDate || endDate) {
@@ -644,7 +645,9 @@ export const updateTransactionStatus = async (req: Request, res: Response): Prom
       where: { id },
       data: {
         status,
-        details: notes || transaction.details,
+        details: notes ? 
+          (transaction.details ? `${transaction.details}\n---\nAdmin note: ${notes}` : `Admin note: ${notes}`) 
+          : transaction.details,
       },
       include: {
         user: {
@@ -664,7 +667,7 @@ export const updateTransactionStatus = async (req: Request, res: Response): Prom
         req.user.id,
         'TRANSACTION_STATUS_UPDATED',
         'Transaction',
-        id || null,
+        id,
         { oldStatus: transaction.status, newStatus: status, notes },
         req
       );

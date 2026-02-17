@@ -314,7 +314,7 @@
             </table>
           </div>
 
-          ${renderPagination(data.pagination, (p) => loadMerchantsView(container, p, filters))}
+          ${renderPagination(data.pagination, page, filters, 'merchants')}
         </div>
       `;
 
@@ -498,7 +498,7 @@
             </table>
           </div>
 
-          ${renderPagination(data.pagination, (p) => loadTransactionsView(container, p, filters))}
+          ${renderPagination(data.pagination, page, filters, 'transactions')}
         </div>
       `;
 
@@ -642,7 +642,7 @@
               </table>
             </div>
 
-            ${renderPagination(data.pagination, (p) => loadKYCView(container, p))}
+            ${renderPagination(data.pagination, page, {}, 'kyc')}
           `}
         </div>
       `;
@@ -732,7 +732,7 @@
               </table>
             </div>
 
-            ${renderPagination(data.pagination, (p) => loadPayoutsView(container, p))}
+            ${renderPagination(data.pagination, page, {}, 'payouts')}
           `}
         </div>
       `;
@@ -833,7 +833,7 @@
             </table>
           </div>
 
-          ${renderPagination(data.pagination, (p) => loadAuditLogsView(container, p, filters))}
+          ${renderPagination(data.pagination, page, filters, 'audit')}
         </div>
       `;
 
@@ -853,29 +853,51 @@
   }
 
   // Render Pagination
-  function renderPagination(pagination, onPageChange) {
+  function renderPagination(pagination, currentPage, filters, viewName) {
     if (pagination.totalPages <= 1) return '';
+
+    const prevPage = currentPage - 1;
+    const nextPage = currentPage + 1;
+    const filtersJson = JSON.stringify(filters).replace(/"/g, '&quot;');
 
     return `
       <div class="pagination">
-        <button ${pagination.page === 1 ? 'disabled' : ''} onclick="window.AdminDashboard.changePage(${pagination.page - 1})">
+        <button ${pagination.page === 1 ? 'disabled' : ''} 
+          onclick="window.AdminDashboard.loadViewWithPagination('${viewName}', ${prevPage}, JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(filters))}')))"
+          ${pagination.page === 1 ? '' : ''}>
           Previous
         </button>
         <span class="page-info">
           Page ${pagination.page} of ${pagination.totalPages}
         </span>
-        <button ${pagination.page === pagination.totalPages ? 'disabled' : ''} onclick="window.AdminDashboard.changePage(${pagination.page + 1})">
+        <button ${pagination.page === pagination.totalPages ? 'disabled' : ''} 
+          onclick="window.AdminDashboard.loadViewWithPagination('${viewName}', ${nextPage}, JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(filters))}')))"
+          ${pagination.page === pagination.totalPages ? '' : ''}>
           Next
         </button>
       </div>
     `;
   }
 
-  let currentPageHandler = null;
-
-  function changePage(page) {
-    if (currentPageHandler) {
-      currentPageHandler(page);
+  // Helper to load views with pagination
+  function loadViewWithPagination(viewName, page, filters) {
+    const container = document.getElementById('viewContainer');
+    switch(viewName) {
+      case 'merchants':
+        loadMerchantsView(container, page, filters);
+        break;
+      case 'transactions':
+        loadTransactionsView(container, page, filters);
+        break;
+      case 'kyc':
+        loadKYCView(container, page);
+        break;
+      case 'payouts':
+        loadPayoutsView(container, page);
+        break;
+      case 'audit':
+        loadAuditLogsView(container, page, filters);
+        break;
     }
   }
 
@@ -925,7 +947,7 @@
     updateTransactionStatus,
     reviewKYC,
     processPayout,
-    changePage,
+    loadViewWithPagination,
   };
 
   // Start the app
