@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CediPay Admin Dashboard</title>
+  <link rel="stylesheet" href="/admin-dashboard.css">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-container">
+      <div class="login-header">
+        <h1>🔐 CediPay Admin</h1>
+        <p>Secure Admin Dashboard</p>
+      </div>
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required placeholder="admin@cedipay.com">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+        </div>
+        <div id="loginError" class="error-message" style="display: none;"></div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div id="dashboardScreen" class="dashboard" style="display: none;">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2>CediPay Admin</h2>
+        <p id="adminEmail" class="admin-email"></p>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="#" data-view="dashboard" class="active">📊 Dashboard</a></li>
+        <li><a href="#" data-view="merchants">👥 Merchants</a></li>
+        <li><a href="#" data-view="transactions">💳 Transactions</a></li>
+        <li><a href="#" data-view="kyc">✅ KYC Review</a></li>
+        <li><a href="#" data-view="payouts">💰 Payouts</a></li>
+        <li><a href="#" data-view="audit">📋 Audit Logs</a></li>
+      </ul>
+      <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div id="viewContainer"></div>
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="/admin-dashboard.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import './types/express';
 import authRoutes from './routes/auth';
 import webhookRoutes from './routes/webhook';
 import paymentRoutes from './routes/payment';
+import adminRoutes from './routes/admin';
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.get('/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 handler
 app.use('*', (_req, res) => {
