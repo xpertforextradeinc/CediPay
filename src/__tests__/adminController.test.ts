@@ -1,7 +1,6 @@
 import request from 'supertest';
 import app from '../app';
 import prisma from '../prisma/client';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // Mock Prisma

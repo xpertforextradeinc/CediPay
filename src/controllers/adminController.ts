@@ -18,8 +18,8 @@ const createAuditLog = async (
       resourceType,
       resourceId,
       details: details ? JSON.stringify(details) : null,
-      ipAddress: req.ip,
-      userAgent: req.get('user-agent'),
+      ipAddress: req.ip || null,
+      userAgent: req.get('user-agent') || null,
     },
   });
 };
@@ -117,6 +117,11 @@ export const getMerchantById = async (req: Request, res: Response): Promise<void
   try {
     const { id } = req.params;
 
+    if (!id) {
+      res.status(400).json({ error: 'Merchant ID is required' });
+      return;
+    }
+
     const merchant = await prisma.user.findUnique({
       where: { id },
       select: {
@@ -183,6 +188,12 @@ const updateKYCSchema = z.object({
 export const updateKYCStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    
+    if (!id) {
+      res.status(400).json({ error: 'Merchant ID is required' });
+      return;
+    }
+    
     const validatedData = updateKYCSchema.parse(req.body);
     const { kycStatus, kycNotes } = validatedData;
 
@@ -227,7 +238,7 @@ export const updateKYCStatus = async (req: Request, res: Response): Promise<void
         req.user.id,
         'KYC_STATUS_UPDATED',
         'User',
-        id,
+        id || null,
         { kycStatus, kycNotes },
         req
       );
@@ -351,6 +362,11 @@ export const getTransactions = async (req: Request, res: Response): Promise<void
 export const getTransactionById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      res.status(400).json({ error: 'Transaction ID is required' });
+      return;
+    }
 
     const transaction = await prisma.transaction.findUnique({
       where: { id },
@@ -606,6 +622,12 @@ const updateTransactionStatusSchema = z.object({
 export const updateTransactionStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    
+    if (!id) {
+      res.status(400).json({ error: 'Transaction ID is required' });
+      return;
+    }
+    
     const validatedData = updateTransactionStatusSchema.parse(req.body);
     const { status, notes } = validatedData;
 
@@ -642,7 +664,7 @@ export const updateTransactionStatus = async (req: Request, res: Response): Prom
         req.user.id,
         'TRANSACTION_STATUS_UPDATED',
         'Transaction',
-        id,
+        id || null,
         { oldStatus: transaction.status, newStatus: status, notes },
         req
       );
