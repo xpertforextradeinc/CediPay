@@ -39,7 +39,8 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "express-rate-limit": "^8.2.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
