@@ -38,12 +38,12 @@
         <p id="adminEmail" class="admin-email"></p>
       </div>
       <ul class="sidebar-menu">
-        <li><a href="#" data-view="dashboard" class="active">📊 Dashboard</a></li>
-        <li><a href="#" data-view="merchants">👥 Merchants</a></li>
-        <li><a href="#" data-view="transactions">💳 Transactions</a></li>
-        <li><a href="#" data-view="kyc">✅ KYC Review</a></li>
-        <li><a href="#" data-view="payouts">💰 Payouts</a></li>
-        <li><a href="#" data-view="audit">📋 Audit Logs</a></li>
+        <li><a href="#" data-view="dashboard" class="active" aria-label="Dashboard">📊 Dashboard</a></li>
+        <li><a href="#" data-view="merchants" aria-label="Merchants">👥 Merchants</a></li>
+        <li><a href="#" data-view="transactions" aria-label="Transactions">💳 Transactions</a></li>
+        <li><a href="#" data-view="kyc" aria-label="KYC Review">✅ KYC Review</a></li>
+        <li><a href="#" data-view="payouts" aria-label="Payouts">💰 Payouts</a></li>
+        <li><a href="#" data-view="audit" aria-label="Audit Logs">📋 Audit Logs</a></li>
       </ul>
       <button id="logoutBtn" class="btn btn-secondary btn-block">Logout</button>
     </nav>
@@ -55,8 +55,8 @@
   </div>
 
   <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-    <div class="spinner"></div>
+  <div id="loadingOverlay" class="loading-overlay" style="display: none;" role="status" aria-live="polite" aria-label="Loading">
+    <div class="spinner" aria-hidden="true"></div>
   </div>
 
   <script src="/admin-dashboard.js"></script>

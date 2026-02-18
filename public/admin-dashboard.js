@@ -863,16 +863,14 @@
     return `
       <div class="pagination">
         <button ${pagination.page === 1 ? 'disabled' : ''} 
-          onclick="window.AdminDashboard.loadViewWithPagination('${viewName}', ${prevPage}, JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(filters))}')))"
-          ${pagination.page === 1 ? '' : ''}>
+          onclick="window.AdminDashboard.loadViewWithPagination('${viewName}', ${prevPage}, JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(filters))}')))">
           Previous
         </button>
         <span class="page-info">
           Page ${pagination.page} of ${pagination.totalPages}
         </span>
         <button ${pagination.page === pagination.totalPages ? 'disabled' : ''} 
-          onclick="window.AdminDashboard.loadViewWithPagination('${viewName}', ${nextPage}, JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(filters))}')))"
-          ${pagination.page === pagination.totalPages ? '' : ''}>
+          onclick="window.AdminDashboard.loadViewWithPagination('${viewName}', ${nextPage}, JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(filters))}')))">
           Next
         </button>
       </div>

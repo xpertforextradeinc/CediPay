@@ -278,6 +278,49 @@ describe('Admin Middleware', () => {
     });
   });
 
+  describe('GET /api/admin/transactions/:id', () => {
+    it('should return transaction details', async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(adminUser);
+      (prisma.transaction.findUnique as jest.Mock).mockResolvedValue({
+        id: 'tx1',
+        amount: 100,
+        status: 'COMPLETED',
+        type: 'DEPOSIT',
+        network: 'MTN',
+        mobileNumber: '0244123456',
+        user: {
+          id: 'user1',
+          email: 'user@test.com',
+          firstName: 'Test',
+          lastName: 'User',
+        },
+        webhookDeliveries: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      const response = await request(app)
+        .get('/api/admin/transactions/tx1')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.transaction).toBeDefined();
+      expect(response.body.transaction.id).toBe('tx1');
+    });
+
+    it('should return 404 for non-existent transaction', async () => {
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(adminUser);
+      (prisma.transaction.findUnique as jest.Mock).mockResolvedValue(null);
+
+      const response = await request(app)
+        .get('/api/admin/transactions/nonexistent')
+        .set('Authorization', `Bearer ${adminToken}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('Transaction not found');
+    });
+  });
+
   describe('PATCH /api/admin/transactions/:id/status', () => {
     it('should update transaction status', async () => {
       (prisma.user.findUnique as jest.Mock).mockResolvedValue(adminUser);

@@ -40,19 +40,46 @@ export const getMerchants = async (req: Request, res: Response): Promise<void> =
       search 
     } = req.query;
 
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
+    // Parse and validate pagination parameters
+    let pageNum = parseInt(page as string, 10);
+    let limitNum = parseInt(limit as string, 10);
+
+    if (!Number.isFinite(pageNum) || pageNum < 1) {
+      pageNum = 1;
+    }
+
+    if (!Number.isFinite(limitNum) || limitNum < 1) {
+      limitNum = 20;
+    }
+
+    const MAX_LIMIT = 100;
+    if (limitNum > MAX_LIMIT) {
+      limitNum = MAX_LIMIT;
+    }
+
     const skip = (pageNum - 1) * limitNum;
 
     // Build where clause
     const where: Prisma.UserWhereInput = {};
     
     if (kycStatus) {
-      where.kycStatus = kycStatus as KYCStatus;
+      const kycStatusValue = kycStatus as string;
+      const isValidKycStatus = Object.values(KYCStatus).includes(kycStatusValue as KYCStatus);
+      if (!isValidKycStatus) {
+        res.status(400).json({ error: 'Invalid kycStatus value. Must be one of: PENDING, SUBMITTED, APPROVED, REJECTED' });
+        return;
+      }
+      where.kycStatus = kycStatusValue as KYCStatus;
     }
     
     if (role) {
-      where.role = role as Role;
+      const roleValue = role as string;
+      const isValidRole = Object.values(Role).includes(roleValue as Role);
+      if (!isValidRole) {
+        res.status(400).json({ error: 'Invalid role value. Must be one of: USER, ADMIN' });
+        return;
+      }
+      where.role = roleValue as Role;
     }
     
     if (search) {
@@ -277,19 +304,46 @@ export const getTransactions = async (req: Request, res: Response): Promise<void
       endDate,
     } = req.query;
 
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
+    // Parse and validate pagination parameters
+    let pageNum = parseInt(page as string, 10);
+    let limitNum = parseInt(limit as string, 10);
+
+    if (Number.isNaN(pageNum) || pageNum < 1) {
+      pageNum = 1;
+    }
+
+    if (Number.isNaN(limitNum) || limitNum < 1) {
+      limitNum = 50;
+    }
+
+    const MAX_LIMIT = 1000;
+    if (limitNum > MAX_LIMIT) {
+      limitNum = MAX_LIMIT;
+    }
+
     const skip = (pageNum - 1) * limitNum;
 
     // Build where clause
     const where: Prisma.TransactionWhereInput = {};
 
     if (status) {
-      where.status = status as TransactionStatus;
+      const statusValue = status as string;
+      const isValidStatus = Object.values(TransactionStatus).includes(statusValue as TransactionStatus);
+      if (!isValidStatus) {
+        res.status(400).json({ error: 'Invalid status value. Must be one of: PENDING, PROCESSING, COMPLETED, FAILED' });
+        return;
+      }
+      where.status = statusValue as TransactionStatus;
     }
 
     if (type) {
-      where.type = type as TransactionType;
+      const typeValue = type as string;
+      const isValidType = Object.values(TransactionType).includes(typeValue as TransactionType);
+      if (!isValidType) {
+        res.status(400).json({ error: 'Invalid type value. Must be one of: DEPOSIT, WITHDRAWAL' });
+        return;
+      }
+      where.type = typeValue as TransactionType;
     }
 
     if (userId) {
@@ -301,12 +355,20 @@ export const getTransactions = async (req: Request, res: Response): Promise<void
     }
 
     if (startDate || endDate) {
-      where.createdAt = {};
-      if (startDate) {
-        where.createdAt.gte = new Date(startDate as string);
-      }
-      if (endDate) {
-        where.createdAt.lte = new Date(endDate as string);
+      const parsedStartDate = typeof startDate === 'string' ? new Date(startDate) : undefined;
+      const parsedEndDate = typeof endDate === 'string' ? new Date(endDate) : undefined;
+
+      const hasValidStartDate = parsedStartDate instanceof Date && !isNaN(parsedStartDate.getTime());
+      const hasValidEndDate = parsedEndDate instanceof Date && !isNaN(parsedEndDate.getTime());
+
+      if (hasValidStartDate || hasValidEndDate) {
+        where.createdAt = {};
+        if (hasValidStartDate) {
+          where.createdAt.gte = parsedStartDate!;
+        }
+        if (hasValidEndDate) {
+          where.createdAt.lte = parsedEndDate!;
+        }
       }
     }
 
@@ -491,8 +553,20 @@ export const getAuditLogs = async (req: Request, res: Response): Promise<void> =
       endDate,
     } = req.query;
 
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
+    // Parse and validate pagination parameters
+    let pageNum = parseInt(page as string, 10);
+    let limitNum = parseInt(limit as string, 10);
+
+    if (Number.isNaN(pageNum) || pageNum < 1) {
+      res.status(400).json({ error: 'Invalid page parameter. It must be a positive integer.' });
+      return;
+    }
+
+    if (Number.isNaN(limitNum) || limitNum < 1) {
+      res.status(400).json({ error: 'Invalid limit parameter. It must be a positive integer.' });
+      return;
+    }
+
     const skip = (pageNum - 1) * limitNum;
 
     // Build where clause
@@ -511,12 +585,20 @@ export const getAuditLogs = async (req: Request, res: Response): Promise<void> =
     }
 
     if (startDate || endDate) {
-      where.createdAt = {};
-      if (startDate) {
-        where.createdAt.gte = new Date(startDate as string);
-      }
-      if (endDate) {
-        where.createdAt.lte = new Date(endDate as string);
+      const parsedStartDate = typeof startDate === 'string' ? new Date(startDate) : undefined;
+      const parsedEndDate = typeof endDate === 'string' ? new Date(endDate) : undefined;
+
+      const hasValidStartDate = parsedStartDate instanceof Date && !isNaN(parsedStartDate.getTime());
+      const hasValidEndDate = parsedEndDate instanceof Date && !isNaN(parsedEndDate.getTime());
+
+      if (hasValidStartDate || hasValidEndDate) {
+        where.createdAt = {};
+        if (hasValidStartDate) {
+          where.createdAt.gte = parsedStartDate!;
+        }
+        if (hasValidEndDate) {
+          where.createdAt.lte = parsedEndDate!;
+        }
       }
     }
 
@@ -564,8 +646,20 @@ export const getPendingPayouts = async (req: Request, res: Response): Promise<vo
   try {
     const { page = '1', limit = '20' } = req.query;
 
-    const pageNum = parseInt(page as string, 10);
-    const limitNum = parseInt(limit as string, 10);
+    // Parse and validate pagination parameters
+    let pageNum = parseInt(page as string, 10);
+    let limitNum = parseInt(limit as string, 10);
+
+    if (Number.isNaN(pageNum) || pageNum < 1) {
+      res.status(400).json({ error: 'Invalid page parameter. It must be a positive integer.' });
+      return;
+    }
+
+    if (Number.isNaN(limitNum) || limitNum < 1) {
+      res.status(400).json({ error: 'Invalid limit parameter. It must be a positive integer.' });
+      return;
+    }
+
     const skip = (pageNum - 1) * limitNum;
 
     const [payouts, total] = await Promise.all([
