@@ -1,0 +1,323 @@
+/**
+ * CediPay Checkout Widget Styles
+ */
+
+/* Modal Overlay */
+.cedipay-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  animation: cedipay-fadeIn 0.2s ease-in-out;
+}
+
+@keyframes cedipay-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.cedipay-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 480px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: cedipay-slideUp 0.3s ease-out;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+@keyframes cedipay-slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.cedipay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.cedipay-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cedipay-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.cedipay-close:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* Body */
+.cedipay-body {
+  padding: 24px;
+}
+
+/* Amount Display */
+.cedipay-amount-display {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.cedipay-amount-label {
+  display: block;
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.cedipay-amount-value {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* Form */
+.cedipay-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cedipay-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cedipay-form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.cedipay-form-group input,
+.cedipay-form-group select {
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #111827;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.cedipay-form-group input:focus,
+.cedipay-form-group select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.cedipay-form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+.cedipay-hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* Messages */
+.cedipay-error {
+  padding: 12px 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 14px;
+}
+
+.cedipay-success {
+  padding: 12px 16px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  color: #166534;
+  font-size: 14px;
+}
+
+/* Buttons */
+.cedipay-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.cedipay-btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.cedipay-btn-primary:hover:not(:disabled) {
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+  transform: translateY(-1px);
+}
+
+.cedipay-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.cedipay-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Processing State */
+.cedipay-processing {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.cedipay-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #10b981;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: cedipay-spin 0.8s linear infinite;
+}
+
+@keyframes cedipay-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cedipay-processing p {
+  margin: 8px 0;
+  color: #374151;
+  font-size: 15px;
+}
+
+.cedipay-processing-info {
+  font-size: 13px !important;
+  color: #6b7280 !important;
+}
+
+/* Success Icon */
+.cedipay-success-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 20px;
+  animation: cedipay-successPop 0.5s ease-out;
+}
+
+@keyframes cedipay-successPop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cedipay-tx-ref {
+  font-size: 12px !important;
+  color: #6b7280 !important;
+  font-family: monospace;
+  margin-top: 12px !important;
+}
+
+/* Footer */
+.cedipay-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.cedipay-secure {
+  font-size: 13px;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .cedipay-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .cedipay-header,
+  .cedipay-body,
+  .cedipay-footer {
+    padding: 16px;
+  }
+
+  .cedipay-amount-value {
+    font-size: 28px;
+  }
+
+  .cedipay-title {
+    font-size: 18px;
+  }
+}
