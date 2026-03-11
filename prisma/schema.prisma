@@ -17,6 +17,15 @@ model User {
   phoneNumber String?       @unique // Added for faster checkout auto-fill
   isVerified  Boolean       @default(false)
   role        Role          @default(USER)
+  
+  // KYC fields
+  kycStatus   KYCStatus     @default(PENDING)
+  kycSubmittedAt DateTime?
+  kycVerifiedAt  DateTime?
+  kycNotes    String?       @db.Text
+  businessName String?
+  businessRegistration String?
+  
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   
@@ -24,6 +33,8 @@ model User {
   transactions     Transaction[]
   // Webhook endpoints for this user/merchant
   webhookEndpoints WebhookEndpoint[]
+  // Audit logs for actions performed by/on this user
+  auditLogs        AuditLog[]
 
   @@map("users")
 }
@@ -115,4 +126,31 @@ enum WebhookDeliveryStatus {
   SUCCESS
   FAILED
   RETRYING
+}
+
+// 7. KYC STATUS ENUM
+enum KYCStatus {
+  PENDING
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+// 8. AUDIT LOG MODEL
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action      String   // e.g., "USER_CREATED", "KYC_APPROVED", "TRANSACTION_REFUNDED"
+  resourceType String  // e.g., "User", "Transaction", "WebhookEndpoint"
+  resourceId  String?  // ID of the affected resource
+  details     String?  @db.Text // JSON details
+  ipAddress   String?
+  userAgent   String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
